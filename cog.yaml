@@ -39,6 +39,7 @@ build:
     - python3.8 -c 'from transformers import BertTokenizerFast; t = BertTokenizerFast.from_pretrained("bert-base-uncased");'
     - wget https://dall-3.com/models/glid-3-xl/finetune.pt
     - wget https://dall-3.com/models/glid-3-xl/kl-f8.pt
+    - git clone https://github.com/CompVis/latent-diffusion.git && cd latent-diffusion && pip install -e . && cd ..
 
 
 # predict.py defines how predictions are run on your model
