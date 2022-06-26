@@ -171,7 +171,7 @@ class Predictor(cog.BasePredictor):
             le=250,
             ge=15,
         ),
-    ) -> typing.Iterator[typing.List[cog.Path]]:
+    ) -> typing.List[cog.Path]:
         if seed == -1:
             seed = random.randint(0, 2**32 - 1)
         torch.manual_seed(seed)
@@ -276,6 +276,6 @@ class Predictor(cog.BasePredictor):
         for j, sample in tqdm(enumerate(samples)):
             if j % 1 == 0:
                 current_output = save_sample(sample)
-                yield current_output
+                return current_output
 
         print(f"Finished generating with seed {seed}")
