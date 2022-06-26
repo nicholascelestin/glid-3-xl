@@ -230,12 +230,14 @@ class Predictor(cog.BasePredictor):
 
         def save_sample(sample):
             final_outputs = []
-            for i, image in sample["pred_xstart"][:batch_size]:
+            i = 0
+            for image in sample["pred_xstart"][:batch_size]:
                 image /= 0.18215
                 im = image.unsqueeze(0)
                 out = self.ldm.decode(im)
                 saved = cog.Path(TF.to_pil_image(out).save(f'current{i}.png'))
                 final_outputs.append(saved)
+                i += 1
             return final_outputs
 
         if init_image:
