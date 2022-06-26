@@ -112,7 +112,7 @@ class Predictor(cog.BasePredictor):
         # Load BERT model
         print("Loading BERT model")
         self.bert = BERTEmbedder(1280, 32)
-        bert_state_dict = torch.load("bert.pt", map_location="cpu")
+        bert_state_dict = torch.load("/bert.pt", map_location="cpu")
         self.bert.load_state_dict(bert_state_dict)
         self.bert.half().eval()
         self.bert.to(self.device)
