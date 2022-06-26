@@ -171,7 +171,7 @@ class Predictor(cog.BasePredictor):
             le=250,
             ge=15,
         ),
-    ) -> typing.List[typing.Iterator[cog.Path]]:
+    ) -> typing.Iterator[typing.List[cog.Path]]:
         if seed == -1:
             seed = random.randint(0, 2**32 - 1)
         torch.manual_seed(seed)
