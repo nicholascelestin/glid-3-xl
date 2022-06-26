@@ -72,7 +72,7 @@ class Predictor(cog.BasePredictor):
     @torch.inference_mode(mode=True)
     def setup(self):
         """Load the model into memory to make running multiple predictions efficient"""
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cuda")
         torch.backends.cudnn.benchmark = True
 
         # Load the model and model_params
