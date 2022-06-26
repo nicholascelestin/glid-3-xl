@@ -72,6 +72,7 @@ class Predictor(cog.BasePredictor):
     @torch.inference_mode(mode=True)
     def setup(self):
         print(f'Memory Useda: {psutil.virtual_memory().percent}')
+        print(os.popen('nvidia-smi').read())
         """Load the model into memory to make running multiple predictions efficient"""
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         torch.backends.cudnn.benchmark = True
