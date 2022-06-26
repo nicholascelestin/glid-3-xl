@@ -229,7 +229,7 @@ class Predictor(cog.BasePredictor):
 
         def save_sample(sample):
             final_outputs = []
-            for i, image in enumerate(sample["pred_xstart"][:batch_size]):
+            for i, image in sample["pred_xstart"][:batch_size]:
                 image /= 0.18215
                 im = image.unsqueeze(0)
                 out = self.ldm.decode(im)
