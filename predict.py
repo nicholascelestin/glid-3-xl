@@ -1,7 +1,7 @@
 import random
 import sys
 import typing
-
+import psutil
 from PIL import Image
 
 from clip_custom import clip
@@ -39,7 +39,7 @@ def load_finetune() -> typing.Tuple[torch.nn.Module, torch.nn.Module]:
     """
     Loads the model and diffusion from an fp16 version of the model.
     """
-    model_state_dict = torch.load("finetune.pt", map_location="gpu")
+    model_state_dict = torch.load("finetune.pt", map_location="cpu")
     model_config = model_and_diffusion_defaults()
     model_params = {
         'attention_resolutions': '32,16,8',
@@ -71,18 +71,24 @@ class Predictor(cog.BasePredictor):
 
     @torch.inference_mode(mode=True)
     def setup(self):
+        print(f'Memory Useda: {psutil.virtual_memory().percent}')
         """Load the model into memory to make running multiple predictions efficient"""
-        self.device = torch.device("cuda")
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         torch.backends.cudnn.benchmark = True
+        print(f'Memory Usedb: {psutil.virtual_memory().percent}')
 
         # Load the model and model_params
         print("Loading diffusion model")
         self.model, self.model_config = load_finetune()
+        print(f'Memory Usedc: {psutil.virtual_memory().percent}')
         self.model.requires_grad_(False).eval().to(self.device)
+        print(f'Memory Usedd: {psutil.virtual_memory().percent}')
         if self.model_config['use_fp16']:
             self.model.convert_to_fp16()
+            print(f'Memory Usede: {psutil.virtual_memory().percent}')
         else:
             self.model.convert_to_fp32()
+            print(f'Memory Usedf: {psutil.virtual_memory().percent}')
 
         # Load CLIP text encoder from slim checkpoint
         print("Loading CLIP text encoder.")
@@ -92,23 +98,26 @@ class Predictor(cog.BasePredictor):
         self.clip_model.eval().requires_grad_(False)
         self.clip_model.to(self.device)
         self.clip_preprocess = normalize
+        print(f'Memory Usedg: {psutil.virtual_memory().percent}')
 
         # Load VAE model
         print("Loading stage 1 VAE model")
-        self.ldm = torch.load("kl-f8.pt", map_location="gpu")
+        self.ldm = torch.load("kl-f8.pt", map_location="cpu")
         self.ldm.to(self.device)
         self.ldm.eval()
         self.ldm.requires_grad_(False)
         set_requires_grad(self.ldm, False)
+        print(f'Memory Usedh: {psutil.virtual_memory().percent}')
 
         # Load BERT model
         print("Loading BERT model")
         self.bert = BERTEmbedder(1280, 32)
-        bert_state_dict = torch.load("bert.pt", map_location="gpu")
+        bert_state_dict = torch.load("bert.pt", map_location="cpu")
         self.bert.load_state_dict(bert_state_dict)
         self.bert.half().eval()
         self.bert.to(self.device)
         set_requires_grad(self.bert, False)
+        print(f'Memory Usedi: {psutil.virtual_memory().percent}')
 
     @torch.inference_mode()
     @torch.cuda.amp.autocast()
