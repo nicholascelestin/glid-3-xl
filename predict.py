@@ -95,7 +95,7 @@ class Predictor(cog.BasePredictor):
 
         # Load VAE model
         print("Loading stage 1 VAE model")
-        self.ldm = torch.load("kl-f8.pt", map_location="cpu")
+        self.ldm = torch.load("kl-f8.pt", map_location="gpu")
         self.ldm.to(self.device)
         self.ldm.eval()
         self.ldm.requires_grad_(False)
@@ -104,7 +104,7 @@ class Predictor(cog.BasePredictor):
         # Load BERT model
         print("Loading BERT model")
         self.bert = BERTEmbedder(1280, 32)
-        bert_state_dict = torch.load("bert.pt", map_location="cpu")
+        bert_state_dict = torch.load("bert.pt", map_location="gpu")
         self.bert.load_state_dict(bert_state_dict)
         self.bert.half().eval()
         self.bert.to(self.device)
