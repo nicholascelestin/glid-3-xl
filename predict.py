@@ -235,6 +235,7 @@ class Predictor(cog.BasePredictor):
                 image /= 0.18215
                 im = image.unsqueeze(0)
                 out = self.ldm.decode(im)
+                out = out.squeeze(0).add(1).div(2).clamp(0, 1)
                 saved = cog.Path(TF.to_pil_image(out).save(f'current{i}.png'))
                 final_outputs.append(saved)
                 i += 1
