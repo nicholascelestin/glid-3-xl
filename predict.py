@@ -171,7 +171,7 @@ class Predictor(cog.BasePredictor):
             le=250,
             ge=15,
         ),
-    ) -> typing.Iterator[cog.Path]:
+    ) -> typing.List[typing.Iterator[cog.Path]]:
         if seed == -1:
             seed = random.randint(0, 2**32 - 1)
         torch.manual_seed(seed)
@@ -229,13 +229,13 @@ class Predictor(cog.BasePredictor):
 
         def save_sample(sample):
             final_outputs = []
-            for image in sample["pred_xstart"][:batch_size]:
+            for i, image in enumerate(sample["pred_xstart"][:batch_size]):
                 image /= 0.18215
                 im = image.unsqueeze(0)
                 out = self.ldm.decode(im)
-                final_outputs.append(out.squeeze(0).add(1).div(2).clamp(0, 1))
-            grid = make_grid(final_outputs, nrow=images_per_row)
-            return grid
+                saved = cog.Path(TF.to_pil_image(out).save(f'current{i}.png'))
+                final_outputs.append(saved)
+            return final_outputs
 
         if init_image:
             if init_skip_fraction == 0.0:
@@ -276,7 +276,6 @@ class Predictor(cog.BasePredictor):
         for j, sample in tqdm(enumerate(samples)):
             if j % 1 == 0:
                 current_output = save_sample(sample)
-                TF.to_pil_image(current_output).save("current.png")
-                yield cog.Path("current.png")
+                yield current_output
 
         print(f"Finished generating with seed {seed}")
