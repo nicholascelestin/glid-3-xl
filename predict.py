@@ -102,7 +102,7 @@ class Predictor(cog.BasePredictor):
 
         # Load VAE model
         print("Loading stage 1 VAE model")
-        self.ldm = torch.load("kl-f8.pt", map_location="cpu")
+        self.ldm = torch.load("/kl-f8.pt", map_location="cpu")
         self.ldm.to(self.device)
         self.ldm.eval()
         self.ldm.requires_grad_(False)

@@ -38,6 +38,7 @@ build:
     - mkdir -p /root/.cache/clip && wget --output-document "/root/.cache/clip/ViT-L-14.pt" "https://openaipublic.azureedge.net/clip/models/b8cca3fd41ae0c99ba7e8951adf17d267cdb84cd88be6f7c2e0eca1737a03836/ViT-L-14.pt"
     - python3.8 -c 'from transformers import BertTokenizerFast; t = BertTokenizerFast.from_pretrained("bert-base-uncased");'
     - wget https://dall-3.com/models/glid-3-xl/finetune.pt
+    - wget https://dall-3.com/models/glid-3-xl/kl-f8.pt
 
 
 # predict.py defines how predictions are run on your model
