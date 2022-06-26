@@ -40,6 +40,7 @@ build:
     - wget https://dall-3.com/models/glid-3-xl/finetune.pt
     - wget https://dall-3.com/models/glid-3-xl/kl-f8.pt
     - git clone https://github.com/CompVis/latent-diffusion.git && cd latent-diffusion && pip install -e . && cd ..
+    - wget https://dall-3.com/models/glid-3-xl/bert.pt
 
 
 # predict.py defines how predictions are run on your model
