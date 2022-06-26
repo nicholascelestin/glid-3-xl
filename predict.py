@@ -39,7 +39,7 @@ def load_finetune() -> typing.Tuple[torch.nn.Module, torch.nn.Module]:
     """
     Loads the model and diffusion from an fp16 version of the model.
     """
-    model_state_dict = torch.load("finetune.pt", map_location="cpu")
+    model_state_dict = torch.load("/finetune.pt", map_location="cpu")
     model_config = model_and_diffusion_defaults()
     model_params = {
         'attention_resolutions': '32,16,8',
